@@ -5,7 +5,7 @@ with open("README.md", 'r') as f:
 
 setup(
     name='compacter',
-    version='1.0.2',
+    version='1.0.4',
     description='Compact directories of parquet files to single parquet files.',
     long_description_content_type="text/markdown",
     license="MIT",

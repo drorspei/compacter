@@ -1,5 +1,6 @@
 import argparse
 import fnmatch
+import io
 import itertools
 import json
 import operator
@@ -74,7 +75,7 @@ def singledir(
             npartitions=npartitions_per_file
         )
         .map(f"{fsprotocol(infs)}://{{}}".format)
-        .map(lambda f: (f, pq.read_table(f, use_threads=False)))
+        .map(lambda f: (f, pq.read_table(io.BytesIO(infs.open(f).read()), use_threads=False)))
         .starmap(lambda f, table: table.append_column(
                 pyarrow.field(filepath_column, pyarrow.string()),
                 pyarrow.array([f] * len(table), pyarrow.string())
@@ -230,7 +231,7 @@ def main(argv=None):
         argv = sys.argv[1:]
     d = get_argparser().parse_args(argv)
     with Client(**json.loads(d.dask_kwargs or '{}')) as client:
-       tasks = compactify(
+        tasks = compactify(
             client=client,
             **{k: v for k, v in vars(d).items() if k != 'dask_kwargs'}
         )
