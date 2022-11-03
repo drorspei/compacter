@@ -218,7 +218,6 @@ def get_argparser():
     ap.add_argument("input_pattern", type=str)
     ap.add_argument("output_path", type=str)
     ap.add_argument("filepath_column", type=str)
-    ap.add_argument("--dask-kwargs", type=str, default=None)
     ap.add_argument("--overlap", type=int, default=1)
     ap.add_argument("--per-file-split-every", type=int, default=16)
     ap.add_argument("--npartitions-per-file", type=int, default=64)
@@ -226,14 +225,14 @@ def get_argparser():
     return ap
 
 def main(argv=None):
-    from dask.distributed import Client
+    from dasker import get_client
     if argv is None:
         argv = sys.argv[1:]
     d = get_argparser().parse_args(argv)
-    with Client(**json.loads(d.dask_kwargs or '{}')) as client:
+    with get_client() as client:
         tasks = compactify(
             client=client,
-            **{k: v for k, v in vars(d).items() if k != 'dask_kwargs'}
+            **vars(d)
         )
         for t in tasks:
             print(t)

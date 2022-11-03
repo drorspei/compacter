@@ -5,7 +5,7 @@ with open("README.md", 'r') as f:
 
 setup(
     name='compacter',
-    version='1.0.4',
+    version='1.0.5',
     description='Compact directories of parquet files to single parquet files.',
     long_description_content_type="text/markdown",
     license="MIT",
@@ -19,6 +19,7 @@ setup(
         "fsspec",
         "s3fs",
         "pyarrow",
+        "dasker",
     ],
     entry_points={
         'console_scripts': [
